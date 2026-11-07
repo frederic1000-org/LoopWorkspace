@@ -1,0 +1,28 @@
+diff --git a/Loop/Loop/Managers/Live Activity/LiveActivityManager.swift b/Loop/Loop/Managers/Live Activity/LiveActivityManager.swift
+--- a/Loop/Loop/Managers/Live Activity/LiveActivityManager.swift
++++ b/Loop/Loop/Managers/Live Activity/LiveActivityManager.swift
+@@ -318,6 +318,15 @@
+         guard minute < 30 else { return date }
+         let startOfHour = calendar.dateInterval(of: .hour, for: date)!.start
+         return startOfHour.addingTimeInterval(.minutes(30))
+     }
++
++    private func downsample(_ samples: [StoredGlucoseSample], interval: TimeInterval = .minutes(5)) -> [StoredGlucoseSample] {
++        var result: [StoredGlucoseSample] = []
++        for sample in samples.reversed() {
++            if let last = result.last, last.startDate.timeIntervalSince(sample.startDate) < interval { continue }
++            result.append(sample)
++        }
++        return result.reversed()
++    }
+ 
+     private func getGlucoseRanges(glucoseRangeSchedule: GlucoseRangeSchedule, presetContext: Preset?, start: Date, end: Date, unit: HKUnit) -> [GlucoseRangeValue] {
+@@ -190,7 +199,7 @@
+                 bottomRow: bottomRow,
+                 // In order to prevent maxSize errors, only allow the last 100 samples to be sent
+                 // Will most likely not be an issue, might be an issue for debugging/CGM simulator with 5sec interval
+-                glucoseSamples: glucoseSamples.suffix(100).map { item in
++                glucoseSamples: downsample(glucoseSamples).suffix(100).map { item in
+                     return GlucoseSampleAttributes(x: item.startDate, y: item.quantity.doubleValue(for: unit))
+                 },
+                 predicatedGlucose: predicatedGlucose,
