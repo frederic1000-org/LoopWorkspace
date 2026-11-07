@@ -1,0 +1,31 @@
+diff --git a/Loop/Loop/Managers/Live Activity/LiveActivityManager.swift b/Loop/Loop/Managers/Live Activity/LiveActivityManager.swift
+--- a/Loop/Loop/Managers/Live Activity/LiveActivityManager.swift
++++ b/Loop/Loop/Managers/Live Activity/LiveActivityManager.swift
+@@ -30,2 +30,3 @@
+     private var startDate: Date = Date.now
++    private var refreshTimer: Timer?
+     private var settings: LiveActivitySettings = UserDefaults.standard.liveActivity ?? LiveActivitySettings()
+@@ -71,2 +72,3 @@
+         nc.addObserver(self, selector: #selector(self.settingsChanged), name: .LiveActivitySettingsChanged, object: nil)
++        startRefreshTimer()
+         guard self.settings.enabled else {
+@@ -478,4 +480,19 @@
+             print("ERROR: Error while creating empty live activity: \(error.localizedDescription)")
+         }
+     }
++
++    private func startRefreshTimer() {
++        DispatchQueue.main.async { [weak self] in
++            guard let self = self else { return }
++            self.refreshTimer?.invalidate()
++            self.refreshTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
++                guard let self = self, self.settings.enabled else { return }
++                self.update()
++            }
++        }
++    }
++
++    deinit {
++        self.refreshTimer?.invalidate()
++    }
+ }
