@@ -1,0 +1,13 @@
+diff --git a/Loop/Loop/Managers/AlertPermissionsChecker.swift b/Loop/Loop/Managers/AlertPermissionsChecker.swift
+index fcd5edc..4124fb2 100644
+--- a/Loop/Loop/Managers/AlertPermissionsChecker.swift
++++ b/Loop/Loop/Managers/AlertPermissionsChecker.swift
+@@ -27,7 +27,7 @@ public class AlertPermissionsChecker: ObservableObject {
+     @Published var notificationCenterSettings: NotificationCenterSettingsFlags = .none
+ 
+     var showWarning: Bool {
+-        notificationCenterSettings.requiresRiskMitigation
++        false
+     }
+ 
+     weak var delegate: AlertPermissionsCheckerDelegate?
