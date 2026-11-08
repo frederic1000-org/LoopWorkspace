@@ -7,7 +7,7 @@ diff --git a/Loop/Loop/Managers/Live Activity/LiveActivityManager.swift b/Loop/L
          return startOfHour.addingTimeInterval(.minutes(30))
      }
 +
-+    private func downsample(_ samples: [StoredGlucoseSample], interval: TimeInterval = .minutes(5)) -> [StoredGlucoseSample] {
++    private func downsample(_ samples: [StoredGlucoseSample], interval: TimeInterval = .minutes(2)) -> [StoredGlucoseSample] {
 +        var result: [StoredGlucoseSample] = []
 +        for sample in samples.reversed() {
 +            if let last = result.last, last.startDate.timeIntervalSince(sample.startDate) < interval { continue }
